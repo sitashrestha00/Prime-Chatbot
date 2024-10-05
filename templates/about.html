@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>About Prime Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('/static/primecollege.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: black;
+        }
+        .navbar {
+            background-color: rgba(0, 123, 255, 0.8);
+            padding: 10px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 14px 20px;
+            display: inline-block;
+        }
+        .navbar a:hover {
+            background-color: rgba(0, 86, 179, 0.7);
+        }
+        /* Add some margin to avoid overlap with navbar */
+        .container {
+            margin-top: 100px; /* Creates space between navbar and content */
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            padding: 20px;
+        }
+        h1 {
+            color: #007bff;
+            font-size: 48px; /* Larger font size for big heading */
+            flex-basis: 30%;
+            margin-left: 40px;
+            text-align: left;
+        }
+        .text-content {
+            flex-basis: 60%;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 8px;
+            margin-right: 40px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+        }
+        p {
+            font-size: 18px;
+            line-height: 1.6;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+        <a href="/contact" id="contactLink">Contact</a>
+        <a href="{{ url_for('user_logout') }}" id="logout-btn">Logout</a>
+        <a href="{{ url_for('login') }}" id="login-btn">Login</a>
+    </div>
+
+    <!-- Main Content Section -->
+    <div class="container">
+        <h1>About Prime Chatbot</h1>
+        <div class="text-content">
+            <p>
+                Prime Chatbot is your go-to virtual assistant designed to assist students, faculty, and visitors by answering a variety of queries about Prime College. Whether you're looking for information about admission processes, academic programs, or campus events, Prime Chatbot is here to provide quick and accurate responses.
+            </p>
+            <p>
+                The chatbot harnesses the power of advanced technology to enhance communication and bridge the gap between the college and its community. With a user-friendly interface, Prime Chatbot simplifies access to crucial details, making the interaction seamless and efficient. It also ensures that users stay informed about the latest updates and offerings of the institution, anytime, anywhere.
+            </p>
+            <p>
+                At Prime College, we are committed to supporting our students and providing them with the tools they need to succeed. Prime Chatbot is a part of this mission, helping streamline inquiries and guiding you through your educational journey.
+            </p>
+            <p>
+                Additionally, Prime Chatbot continuously evolves to incorporate more sophisticated features, ensuring that it stays up-to-date with the latest advancements and responds even more intelligently to user needs over time.
+            </p>
+            
+        </div>
+    </div>
+    <script>
+        // Check authentication status on page load
+        $(document).ready(function() {
+            const isAuthenticated = {{ current_user.is_authenticated | tojson }};
+            
+            if (isAuthenticated) {
+                $('#login-btn').hide(); // Hide login button
+                $('#logout-btn').show(); // Show logout button
+            } else {
+                $('#login-btn').show(); // Show login button
+                $('#logout-btn').hide(); // Hide logout button
+            }
+    
+            // Optional: If you want to handle AJAX logout
+            $('#logout-btn').click(function(event) {
+                event.preventDefault(); // Prevent default action
+                $.ajax({
+                    url: "{{ url_for('user_logout') }}",
+                    type: "POST",
+                    success: function(response) {
+                        // On success, refresh the page or redirect
+                        location.reload(); // Reload to update button status
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

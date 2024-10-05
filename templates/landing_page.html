@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>Chatbot Home Page</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-image: url('/static/primecollege.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: black;
+        }
+
+        .navbar {
+            background-color: rgba(0, 123, 255, 0.7);
+            padding: 10px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 14px 20px;
+            display: inline-block;
+        }
+
+        .navbar a:hover {
+            background-color: rgba(0, 86, 179, 0.7);
+        }
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding-top: 60px;
+            box-sizing: border-box;
+        }
+
+        .centered-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            margin-top: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+button#loginBtn {
+    padding: 15px 30px;  /* Increased padding for bubble effect */
+    width: auto;  /* Remove fixed width */
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 30px;  /* Rounded corners */
+    cursor: pointer;
+    font-size: 16px;
+    position: relative;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);  /* Shadow for bubble effect */
+}
+
+button#loginBtn::after {
+    content: "";
+    position: absolute;
+    bottom: -10px;  /* Position below the button */
+    left: 20px;  /* Position the tail */
+    border-width: 10px;
+    border-style: solid;
+    border-color: #007bff transparent transparent transparent;  /* Tail color */
+}
+
+button#loginBtn:hover {
+    background-color: #0056b3;
+    box-shadow: 0px 7px 17px rgba(0, 0, 0, 0.3);  /* Darker shadow on hover */
+}
+        button {
+            padding: 10px;
+            width: 180px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Chatbox Modal Styles */
+        .chatbox-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            bottom: 0;
+            right: 20px;
+            width: 400px;  /* Width remains unchanged */
+            height: 500px; /* Height increased */
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .chatbox-header {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            position: relative;
+        }
+
+        .chatbox-body {
+            padding: 10px;
+            height: 380px; /* Adjusted height for the chat messages */
+            overflow-y: auto;
+        }
+
+        .chatbox-footer {
+            padding: 10px;
+            background-color: #f1f1f1;
+            margin-top: 10px; /* Added margin to move it down */
+        }
+
+        .chatbox-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .close-chatbox-btn {
+            background-color: red;
+            color: white;
+            padding: 0px 3px;
+            font-size: 14px;
+            cursor: pointer;
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            line-height: 20px;
+            text-align: center;
+        }
+
+        .signup-form {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+            z-index: 3000;
+        }
+
+        .signup-form input {
+            display: block;
+            margin: 10px 0;
+            padding: 5px;
+            width: 200px;
+        }
+
+        .signup-form button {
+            margin-top: 10px;
+        }
+        
+        /* Footer Styles */
+        .footer {
+            background-color:rgba(0, 86, 179, 0.7);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            width: 100%;
+            bottom: 0;
+            margin-top: auto;
+        }
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start; /* Align to top */
+            max-width: 1000px;
+            margin: 0 auto;
+            gap: 20px; /* Add gap between sections */
+        }
+        
+        .footer-section {
+            text-align: left;
+            flex: 1;
+            padding: 0 20px;
+            border-left: 2px solid white;
+        }
+        
+        /* Remove border for the first section */
+        .footer-section:first-child {
+            border-left: none;
+        }
+        
+        .footer-section h4 {
+            margin-bottom: 10px;
+            font-weight: bold;
+            font-size: 1.5em; /* Increase h4 font size */
+        }
+        
+        .footer-section p,
+        .footer-section ul {
+            margin: 5px 0;
+            font-weight: bold;
+            font-size: 1.2em; /* Increase paragraph and list font size */
+        }
+        
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .footer-section li {
+            margin-bottom: 5px;
+        }
+        
+        .footer-bottom {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 1.2em; /* Increase footer bottom font size */
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <a href="/home">Home</a>
+        <a href="/about">About</a>  <!-- Updated the About link -->
+        <a href="/contact" id="contactLink">Contact</a>
+        <a href="{{ url_for('user_logout') }}" id="logout-btn">Logout</a>
+        <a href="{{ url_for('login') }}" id="login-btn">Login to Chat</a>
+    </div>
+
+    <!-- Main content filling the window -->
+    <div class="content">
+        <!-- Fixed Login Button on bottom-right -->
+        <div class="centered-button">
+            <button id="loginBtn">Chat with Prime-Chatbot</button>
+        </div>
+    </div>
+
+    <!-- Chatbox Modal -->
+    <div class="chatbox-modal" id="chatboxModal">
+        <div class="chatbox-header">
+            <span>Prime-Chatbot</span>
+            <button class="close-chatbox-btn" id="closeChatboxBtn">X</button>
+        </div>
+        <div class="chatbox-body" id="chatboxBody">
+            <!-- Chat messages will go here -->
+        </div>
+        <div class="chatbox-footer">
+            <input type="text" id="chatboxInput" class="chatbox-input" placeholder="Type a message...">
+        </div>
+    </div>
+    
+    <!-- Sign-up form -->
+    <div class="signup-form" id="signupForm">
+        <h2>Sign Up</h2>
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="submitSignup()">Sign Up</button>
+    </div>
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Contact Us</h4>
+                <br>
+                <p>Khusibu, Kathmandu, Nepal</p>
+                <br>
+                <p>01-4961690</p>
+                <p>01-4970072</p>
+                <br>
+                <p>info@primecollege.edu.np</p>
+                <p>admission@primecollege.edu.np</p>
+                <br>
+                <p>You can visit Prime College between 7:00 a.m. - 5:00 p.m. for more information</p>
+            </div>
+            <div class="footer-section">
+                <h4>Bachelor's Programs</h4>
+                <ul>
+                    <li>BSc. CSIT</li>
+                    <li>BCA</li>
+                    <li>BBM</li>
+                    <li>BBA</li>
+                    <li>BIM</li>
+                    <li>BBS</li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Master's Programs</h4>
+                <ul>
+                    <li>MBS</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Prime College</p>
+        </div>
+    </footer>
+
+    <script>
+        // Open chatbox on login button click
+        var loginBtn = document.getElementById("loginBtn");
+        var chatboxModal = document.getElementById("chatboxModal");
+        var closeChatboxBtn = document.getElementById("closeChatboxBtn");
+
+        loginBtn.onclick = function() {
+            chatboxModal.style.display = "block";
+        }
+
+        closeChatboxBtn.onclick = function() {
+            chatboxModal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == chatboxModal) {
+                chatboxModal.style.display = "none";
+            }
+        }
+
+        var chatboxInput = document.getElementById("chatboxInput");
+        var chatboxBody = document.getElementById("chatboxBody");
+
+        chatboxInput.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                var userInput = chatboxInput.value;
+                if (userInput.trim() !== "") {
+                    // Append user's message to chatbox
+                    chatboxBody.innerHTML += "<p><strong>You:</strong> " + userInput + "</p>";
+                    chatboxInput.value = "";
+
+                    // Send user input to the server to get chatbot response
+                    fetch('/chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ message: userInput })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Append bot's response to chatbox
+                        chatboxBody.innerHTML += "<p><strong>Bot:</strong> " + data.response + "</p>";
+                    })
+                    .catch(error => {
+                        chatboxBody.innerHTML += "<p><strong>Bot:</strong> Sorry, something went wrong.</p>";
+                    });
+                }
+            }
+        });
+
+        var signupForm = document.getElementById("signupForm");
+
+        function submitSignup() {
+            // Here you would typically send the signup data to your server
+            // For this example, we'll just close the form and re-enable chat
+            signupForm.style.display = "none";
+            chatboxInput.disabled = false;
+            chatboxBody.innerHTML += "<p><strong>Bot:</strong> Thank you for signing up! You can now continue chatting.</p>";
+        }
+    </script>
+    <script>
+        // Check authentication status on page load
+        $(document).ready(function() {
+            const isAuthenticated = {{ current_user.is_authenticated | tojson }};
+            
+            if (isAuthenticated) {
+                $('#login-btn').hide(); // Hide login button
+                $('#logout-btn').show(); // Show logout button
+            } else {
+                $('#login-btn').show(); // Show login button
+                $('#logout-btn').hide(); // Hide logout button
+            }
+    
+            // Optional: If you want to handle AJAX logout
+            $('#logout-btn').click(function(event) {
+                event.preventDefault(); // Prevent default action
+                $.ajax({
+                    url: "{{ url_for('user_logout') }}",
+                    type: "POST",
+                    success: function(response) {
+                        // On success, refresh the page or redirect
+                        location.reload(); // Reload to update button status
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

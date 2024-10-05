@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>Contact Us - Prime College</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-image: url('/static/primecollege.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: white;
+        }
+
+        .navbar {
+            background-color: rgba(0, 123, 255, 0.7);
+            padding: 10px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 14px 20px;
+            display: inline-block;
+        }
+
+        .navbar a:hover {
+            background-color: rgba(0, 86, 179, 0.7);
+        }
+
+        .content {
+            display: flex;
+            flex-direction: column; /* Ensure vertical stacking */
+            align-items: flex-start; /* Align everything to the left */
+            justify-content: flex-start; /* Align content to the top */
+            height: 100vh;
+            padding-top: 100px;
+            padding-left: 50px; /* Keep padding to move content a bit inward */
+            padding-right: 50px;
+            box-sizing: border-box;
+        }
+
+        .contact-heading {
+            font-size: 50px;
+            font-weight: bold;
+            margin: 0;
+            color: #007bff;
+        }
+
+        .contact-details {
+            max-width: 80%; /* Adjusted width to 80% for a better fit */
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            margin-top: 20px; /* Add space between heading and details */
+        }
+
+        .contact-details p {
+            font-size: 20px;
+            line-height: 1.6;
+            margin: 10px 0;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+        <a href="#" id="contactLink">Contact</a>
+        <a href="{{ url_for('user_logout') }}" id="logout-btn">Logout</a>
+        <a href="{{ url_for('login') }}" id="login-btn">Login</a>
+    </div>
+
+    <!-- Main content -->
+    <div class="content">
+        <!-- Left side with big font "Contact Us" -->
+        <div>
+            <h1 class="contact-heading">Contact Us</h1>
+        </div>
+        <!-- Right side with contact details -->
+        <div class="contact-details">
+            <p><strong>Address:</strong> Prime College, Khusibun, Nayabazar, Kathmandu</p>
+            <p><strong>Phone:</strong> 01-4961690, 01-4970072</p>
+            <p><strong>Email:</strong> info@primecollege.edu.np</p>
+            <p><strong>Email:</strong> admissions@prime.edu.np</p>
+            <p><strong>Office Hours:</strong> Monday to Friday, 9 AM - 5 PM</p>
+        </div>
+    </div>
+    <script>
+        // Check authentication status on page load
+        $(document).ready(function() {
+            const isAuthenticated = {{ current_user.is_authenticated | tojson }};
+            
+            if (isAuthenticated) {
+                $('#login-btn').hide(); // Hide login button
+                $('#logout-btn').show(); // Show logout button
+            } else {
+                $('#login-btn').show(); // Show login button
+                $('#logout-btn').hide(); // Hide logout button
+            }
+    
+            // Optional: If you want to handle AJAX logout
+            $('#logout-btn').click(function(event) {
+                event.preventDefault(); // Prevent default action
+                $.ajax({
+                    url: "{{ url_for('user_logout') }}",
+                    type: "POST",
+                    success: function(response) {
+                        // On success, refresh the page or redirect
+                        location.reload(); // Reload to update button status
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
