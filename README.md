@@ -13,7 +13,7 @@ Prime Chatbot is an intelligent conversational assistant designed to provide sea
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/your-username/Prime-Chatbot.git
+    https://github.com/sitashrestha00/Prime-Chatbot.git
     ```
 2. Navigate to the project directory:
     ```bash
